@@ -1,85 +1,63 @@
-#include <bits/stdc++.h>
-
-typedef unsigned long long int ulli;
-
-using namespace std;
-
-ulli euclid(ulli m, ulli n);
-ulli euclid2(ulli m, ulli n);
-void my_swap(long &m, long &n);
-vector<long> random_number(long n, long min, long max);
-void selection_sort(vector<long> &array);
-void bubble_sort(vector<long> &array);
-void insertion_sort(vector<long> &array);
-void heap_sort(vector<long> &array);
-void up_heap(vector<long> &array, int id_child);
-void down_heap(vector<long> &array, int n);
-void merge_sort(vector<long> &array, int left, int right);
-void quick_sort(vector<long> &array, int left, int right);
+#include "library.hpp"
 
 int main( int argc, char **argv )
 {
-  int m;
+  long m;
   cin >> m;
   cout << endl;
-  vector<long> array = random_number(m, 0, 100);
-  for ( uint i = 0 ; i < array.size() ; ++i )
+  vector<long> array = random_number<long>(m, 0, 100);
+  for ( uli i = 0 ; i < array.size() ; ++i )
 	{
 	  cout << array[i] << endl;
 	}
   cout << endl;
-  quick_sort(array, 0, m-1);
-  for ( uint i = 0 ; i < array.size() ; ++i )
-	{
-	  cout << array[i] << endl;
-	}
+  srand((unsigned int)time(NULL));
+  long key = array[rand() % m];
+  cout << key << endl;
+  cout << linear_search<long>(array, key) << endl;
   return EXIT_SUCCESS;
 }
 
-ulli euclid(ulli m, ulli n)
+template<typename T>
+T euclid_rest(T m, T n)
 {
-  if ( m < n ) { swap(m, n); }
-  if ( n == 0 ) { return m; }
-  euclid(n, m % n);
+  if ( m < n ) swap(m, n); 
+  if ( n == 0 ) return m; 
+  euclid_rest(n, m % n);
   return 777; // dummy
 }
 
-ulli euclid2(ulli m, ulli n)
+template<typename T>
+T euclid_sub(T m, T n)
 {
-  if ( m < n ) { swap(m, n); }
-  if ( m - n == 0 ) { return m; }
-  euclid2(n, m - n);
+  if ( m < n ) swap(m, n);
+  if ( m - n == 0 ) return m;
+  euclid_sub(n, m - n);
   return 777; // dummy
 }
 
-void my_swap(long &m, long &n)
-{
-  long t;
-  t = m;
-  m = n;
-  n = t;
-}
-
-vector<long> random_number(long n, long min, long max)
+template<typename T>
+vector<T> random_number(T n, T min, T max)
 {
   unsigned seed = chrono::system_clock::now().time_since_epoch().count();
   mt19937 gen(seed);
   uniform_int_distribution<int> dist(min, max);
-  vector<long> array(n);
-  for ( long i = 0 ; i < n ; ++i )
+  vector<T> array(n);
+  for ( T i = 0 ; i < n ; ++i )
 	{
 	  array[i] = dist(gen);
 	}
   return array;
 }
 
-void selection_sort(vector<long> &array)
+template<typename T>
+void selection_sort(vector<T> &array)
 {
-  uint N = array.size();
-  for ( uint i = 0 ; i < N - 1 ; i++ )
+  T N = array.size();
+  for ( T i = 0 ; i < N - 1 ; i++ )
 	{
-	  uint min_id = i;
-	  for ( uint j = i + 1 ; j < N ; j++ )
+	  T min_id = i;
+	  for ( T j = i + 1 ; j < N ; j++ )
 		{
 		  if ( array[j] < array[min_id] )
 			{
@@ -90,12 +68,13 @@ void selection_sort(vector<long> &array)
 	}
 }
 
-void bubble_sort(vector<long> &array)
+template<typename T>
+void bubble_sort(vector<T> &array)
 {
-  uint N = array.size();
-  for ( uint i = 0 ; i < N - 1 ; i++ )
+  T N = array.size();
+  for ( T i = 0 ; i < N - 1 ; i++ )
 	{
-	  for ( uint j = 1 ; j < N - i ; j++ )
+	  for ( T j = 1 ; j < N - i ; j++ )
 		{
 		  if ( array[j] < array[j-1] ) 
 			{
@@ -105,13 +84,14 @@ void bubble_sort(vector<long> &array)
 	}
 }
 
-void insertion_sort(vector<long> &array)
+template<typename T>
+void insertion_sort(vector<T> &array)
 {
-  uint N = array.size();
-  for ( uint i = 1 ; i < N ; i++ )
+  T N = array.size();
+  for ( T i = 1 ; i < N ; i++ )
 	{
-	  int tmp = array[i];
-	  uint j;
+	  T tmp = array[i];
+	  T j;
 	  for ( j = i ; j > 0 && array[j-1] > tmp ; j-- )
 		{
 		  array[j] = array[j-1];
@@ -120,10 +100,11 @@ void insertion_sort(vector<long> &array)
 	}
 }
 
-void heap_sort(vector<long> &array)
+template<typename T>
+void heap_sort(vector<T> &array)
 {
-  int i = 0;
-  int N = array.size();
+  T i = 0;
+  T N = array.size();
   while ( ++i < N )
 	{
 	  up_heap(array, i);
@@ -135,11 +116,12 @@ void heap_sort(vector<long> &array)
 	}
 }
 
-void up_heap(vector<long> &array, int id_child)
+template<typename T>
+void up_heap(vector<T> &array, T id_child)
 {
   while ( id_child > 0 )
 	{
-	  int id_parent = (id_child + 1) / 2 - 1; 
+	  T id_parent = (id_child + 1) / 2 - 1; 
 	  if ( array[id_parent] < array[id_child] ) 
 		{
 		  swap(array[id_parent], array[id_child]);
@@ -152,15 +134,16 @@ void up_heap(vector<long> &array, int id_child)
 	}
 }
 
-void down_heap(vector<long> &array, int n)
+template<typename T>
+void down_heap(vector<T> &array, T n)
 {
-  int id_parent = 0;
-  int tmp = 0;
+  T id_parent = 0;
+  T tmp = 0;
   
   for(;;)
 	{
-	  int id_left_child = (id_parent + 1) * 2 - 1;
-	  int id_right_child = (id_parent + 1) * 2;
+	  T id_left_child = (id_parent + 1) * 2 - 1;
+	  T id_right_child = (id_parent + 1) * 2;
 	  if ( id_left_child >= n )
 		{
 		  break;
@@ -182,21 +165,22 @@ void down_heap(vector<long> &array, int n)
 	}
 }
 
-void merge_sort(vector<long> &array, int left, int right)
+template<typename T>
+void merge_sort(vector<T> &array, T left, T right)
 {
   if ( left >= right ) 
 	{
 	  return;
 	}
 
-  int mid = (left + right) / 2;
+  T mid = (left + right) / 2;
 
   merge_sort(array, left, mid);
   merge_sort(array, mid + 1, right);
 
-  vector<long> tmp(array.size());
+  vector<T> tmp(array.size());
   
-  int i, j;
+  T i, j;
 
   for ( i = left; i <= mid; i++ )
 	{
@@ -210,7 +194,7 @@ void merge_sort(vector<long> &array, int left, int right)
   i = left;
   j = right;
 
-  for ( int k = left; k <= right; k++ )
+  for ( T k = left; k <= right; k++ )
 	{
 	  if ( tmp[i] <= tmp[j] )
 		{
@@ -223,11 +207,12 @@ void merge_sort(vector<long> &array, int left, int right)
 	}  
 }
 
-void quick_sort(vector<long> &array, int left, int right)
+template<typename T>
+void quick_sort(vector<T> &array, T left, T right)
 {
-  int i = left;
-  int j = right;
-  int pivot = array[(left+right)/2];
+  T i = left;
+  T j = right;
+  T pivot = array[(left+right)/2];
 
   for(;;) 
 	{
@@ -242,3 +227,18 @@ void quick_sort(vector<long> &array, int left, int right)
   if ( left < i - 1 ) quick_sort(array, left, i - 1);
   if ( j + 1 < right ) quick_sort(array, j + 1, right);
 }
+
+template <typename T>
+T linear_search(vector<T> &array, T key)
+{
+  T size = array.size();
+  for ( T i = 0 ; i < size ; ++i )
+	{
+	  if ( array[i] == key )
+		{
+		  return i;
+		}
+	}
+  return -1;
+}
+
