@@ -1,9 +1,6 @@
 #include <bits/stdc++.h>
 
 typedef unsigned long long int ulli;
-typedef unsigned long int uli;
-
-const int KEY_NOT_FOUND = -1;
 
 using namespace std;
 
@@ -38,16 +35,8 @@ template<typename T>
 void merge_sort(vector<T> &array, T left, T right);
 
 template<typename T>
-void quick_sort(vector<T> &array, T left, T right);
+void quick_sort(vector<long> &array, T left, T right);
 
 template<typename T>
 T linear_search(vector<T> &array, T key);
 
-template<typename T>
-T binary_search(vector<T> &array, T key, T min_pos, T max_pos);
-
-template<typename T>
-T binary_search2(vector<T> &array, T key, T min_pos, T max_pos);
-
-template<typename T>
-T binary_search3(vector<T> &array, T key, T min_pos, T max_pos);

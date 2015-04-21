@@ -11,10 +11,16 @@ int main( int argc, char **argv )
 	  cout << array[i] << endl;
 	}
   cout << endl;
+  quick_sort<long>(array, 0, m-1);
+  for ( uli t : array )
+	{
+	  cout << t << endl;
+	}
+  cout << endl;
   srand((unsigned int)time(NULL));
   long key = array[rand() % m];
   cout << key << endl;
-  cout << linear_search<long>(array, key) << endl;
+  cout << binary_search3<long>(array, key, 0, m-1) << endl;
   return EXIT_SUCCESS;
 }
 
@@ -23,7 +29,7 @@ T euclid_rest(T m, T n)
 {
   if ( m < n ) swap(m, n); 
   if ( n == 0 ) return m; 
-  euclid_rest(n, m % n);
+  euclid_rest<T>(n, m % n);
   return 777; // dummy
 }
 
@@ -32,7 +38,7 @@ T euclid_sub(T m, T n)
 {
   if ( m < n ) swap(m, n);
   if ( m - n == 0 ) return m;
-  euclid_sub(n, m - n);
+  euclid_sub<T>(n, m - n);
   return 777; // dummy
 }
 
@@ -107,12 +113,12 @@ void heap_sort(vector<T> &array)
   T N = array.size();
   while ( ++i < N )
 	{
-	  up_heap(array, i);
+	  up_heap<T>(array, i);
 	}
   while ( --i > 0 )
 	{
 	  swap(array[0], array[i]);
-	  down_heap(array, i);
+	  down_heap<T>(array, i);
 	}
 }
 
@@ -175,8 +181,8 @@ void merge_sort(vector<T> &array, T left, T right)
 
   T mid = (left + right) / 2;
 
-  merge_sort(array, left, mid);
-  merge_sort(array, mid + 1, right);
+  merge_sort<T>(array, left, mid);
+  merge_sort<T>(array, mid + 1, right);
 
   vector<T> tmp(array.size());
   
@@ -224,8 +230,8 @@ void quick_sort(vector<T> &array, T left, T right)
 	  j--;
 	}
   
-  if ( left < i - 1 ) quick_sort(array, left, i - 1);
-  if ( j + 1 < right ) quick_sort(array, j + 1, right);
+  if ( left < i - 1 ) quick_sort<T>(array, left, i - 1);
+  if ( j + 1 < right ) quick_sort<T>(array, j + 1, right);
 }
 
 template <typename T>
@@ -239,6 +245,77 @@ T linear_search(vector<T> &array, T key)
 		  return i;
 		}
 	}
-  return -1;
+  return KEY_NOT_FOUND;
 }
 
+template<typename T>
+T binary_search(vector<T> &array, T key, T min_pos, T max_pos)
+{
+  while (min_pos <= max_pos)
+	{
+	  T mid_pos = (min_pos + max_pos) / 2;
+	  if (array[mid_pos] < key)
+		{
+		  min_pos = mid_pos + 1;
+		}
+	  else if (array[mid_pos] > key)
+		{
+		  max_pos = mid_pos - 1;
+		}
+	  else
+		{
+		  return mid_pos;
+		}
+	}
+  return KEY_NOT_FOUND;
+}
+
+template<typename T>
+T binary_search2(vector<T> &array, T key, T min_pos, T max_pos)
+{
+  while (min_pos < max_pos)
+	{
+	  T mid_pos = (min_pos + max_pos) / 2;
+	  if (array[mid_pos] < key) 
+		{
+		  min_pos = mid_pos + 1;
+		}
+	  else
+		{
+		  max_pos = mid_pos;
+		}
+	}
+  if ((min_pos == max_pos) && (array[min_pos] == key))
+	{
+	  return min_pos;
+	}
+  else
+	{
+	  return KEY_NOT_FOUND;
+	}
+}
+
+template<typename T>
+T binary_search3( vector<T> &array, T key, T min_pos, T max_pos )
+{
+  if ( min_pos <= max_pos )
+	{
+	  T mid_pos = (min_pos + max_pos) / 2;
+	  if ( array[mid_pos] > key )
+		{
+		  return binary_search3<T>( array, key, min_pos, mid_pos - 1 );
+		}
+	  else if ( array[mid_pos] < key )
+		{
+		  return binary_search3<T>( array, key, mid_pos + 1, max_pos);
+		}
+	  else
+		{
+		  return mid_pos;
+		}
+	}
+  else
+	{
+	  return KEY_NOT_FOUND;
+	}
+}
